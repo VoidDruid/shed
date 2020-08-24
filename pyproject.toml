@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "shed"
+version = "0.1.0"
+description = "High-level shell scripting language, derived from Python"
+authors = ["Igor Beschastnov <beschastnovigor@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^7.1.2"
+colorama = "^0.4.3"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^19.10b0", allow-prereleases = true}
+pylint = "^2.3"
+isort = "^4.3"
+unify = "^0.5.0"
+mypy = "^0.761.0"
+pytest = "^5.3"
+pytest-mock = "^1.13"
+pytest-cov = "^2.8"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
