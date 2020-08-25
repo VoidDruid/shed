@@ -1,5 +1,6 @@
 CODE = shed
-# Allow setting coverage level from cli
+TESTS = tests
+# Allow setting target coverage level from cli
 COV_LEVEL=95
 # Add source dir to pythonpath
 PYTHONPATH = PYTHONPATH=./:$(CODE)
@@ -22,13 +23,13 @@ test-cov:
 	$(TEST) --cov-report html
 
 lint:
-	black --line-length=100 --skip-string-normalization --check $(CODE)
-	pylint --jobs 4 --rcfile=setup.cfg $(CODE)
+	black --line-length=100 --skip-string-normalization --check $(CODE) $(TESTS)
+	pylint --jobs 4 --rcfile=setup.cfg $(CODE) $(TESTS)
 	mypy $(CODE)
 
 format:
-	isort --apply --recursive $(CODE)
-	black --line-length=100 --skip-string-normalization $(CODE)
-	unify --in-place --recursive $(CODE)
+	isort --apply --recursive $(CODE) $(TESTS)
+	black --line-length=100 --skip-string-normalization $(CODE) $(TESTS)
+	unify --in-place --recursive $(CODE) $(TESTS)
 
 validate: lint test
