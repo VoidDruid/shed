@@ -3,6 +3,7 @@ import sys
 from typing import Any
 
 import click
+from click_spinner import spinner
 from rich.console import Console
 
 from . import __lang_extension__, __lang_name__, __version__
@@ -74,11 +75,12 @@ def main(script: str, only_transpile: bool, verbose: int) -> None:
             iprint(f'{name}: {info(value)}', 1)
         console.print()
 
-    if is_filename(script):
-        with open(script, 'r') as script_file:
-            result_script = transpile(file=script_file)
-    else:
-        result_script = transpile(source=script)
+    with spinner():
+        if is_filename(script):
+            with open(script, 'r') as script_file:
+                result_script = transpile(file=script_file)
+        else:
+            result_script = transpile(source=script)
 
     if verbose:
         print_line()
