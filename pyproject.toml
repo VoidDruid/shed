@@ -7,7 +7,8 @@ authors = ["Igor Beschastnov <beschastnovigor@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 click = "^7.1.2"
-colorama = "^0.4.3"
+rich = "^6.0.0"
+pydantic = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^19.10b0", allow-prereleases = true}
