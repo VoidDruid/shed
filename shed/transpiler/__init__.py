@@ -1,33 +1,44 @@
 import io
-from ast import AST, parse
+from ast import AST
 from typing import Optional, TextIO, Union
 
-from .transpiler import transpile as transpile_
+from .transpiler import transpile_source, transpile_ast, TranspilerContext, sb_name
 
 
-def ast_from_filename(filename: str) -> AST:
-    # TODO: maybe we can import it as module or something?
+def source_from_filename(filename: str) -> str:
     with open(filename, 'r') as script_file:
-        return ast_from_source_text(script_file.read())
+        return script_file.read()
 
 
-def ast_from_source_text(source: str) -> AST:
-    return parse(source)
+def validate_source(source: str, context: TranspilerContext) -> None:
+    reserved_names = (sb_name, context.prefix)
+    for name in reserved_names:
+        if name in source:  # TODO, FIXME: very dumb check
+            raise ValueError(f'Found reserved name/prefix {name}')
+    if '\n\t' in source:
+        raise ValueError('Tabs are forbidden! Use spaces for indentation')
 
 
-def transpile(file: Optional[Union[str, TextIO]] = None, source: Optional[str] = None) -> AST:
+def transpile(
+    file: Optional[Union[str, TextIO]] = None,
+    source: Optional[str] = None,
+    context: Optional[TranspilerContext] = None
+) -> AST:
     assert (
         file or source
     ), 'Provide either opened file (or file name) or source code for transpiling, not both!'
+    filename = None
 
     if isinstance(file, io.TextIOWrapper):
         source = file.read()
-    if source is not None:
-        script_ast = ast_from_source_text(source)
-    else:
-        script_ast = ast_from_filename(file)  # type:ignore
+        filename = file.name
+    if source is None:
+        source = source_from_filename(file)
+        filename = file
 
-    return transpile_(script_ast)
+    context = context or TranspilerContext(filename=filename)
+    validate_source(source, context)
+    return transpile_source(source, context)
 
 
-__all__ = ['transpile']
+__all__ = ['transpile_source', 'transpile_ast', 'transpile', 'validate_source', 'TranspilerContext']

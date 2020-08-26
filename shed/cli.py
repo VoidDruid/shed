@@ -1,56 +1,20 @@
 import os
 import sys
-from typing import Any
 
 import click
 from click_spinner import spinner
-from rich.console import Console
 
-from . import __lang_extension__, __lang_name__, __version__
+from . import __lang_name__, __version__, __lang_extension__
 from .config import settings
 from .run import execute
-from .transpiler import transpile
-from .utils import prettify
+from .transpiler import transpile, TranspilerContext
+from .utils import prettify, console, title, info, print_line, print_center, iprint
 
 VERBOSITY_NUM_TO_STR = {
     1: 'info',
     2: 'develop',
     3: 'debug',
 }
-
-console = Console()
-
-
-def title(string: Any) -> str:
-    return f'[blue]{string}[/blue]'
-
-
-def info(string: Any) -> str:
-    return f'[green]{string}[/green]'
-
-
-def error(string: Any) -> str:
-    return f'[red]{string}[/red]'
-
-
-def line() -> str:
-    return '-' * console.width
-
-
-def print_line() -> None:
-    console.print(line())
-
-
-def center(string: str) -> str:
-    return ' ' * ((console.width - len(string)) // 2) + string
-
-
-def print_center(string: str) -> None:
-    console.print(center(string))
-
-
-def iprint(string: str, ident: int = 0) -> None:
-    console.print('\t' * ident + string)
 
 
 def is_filename(script: str) -> bool:
@@ -60,9 +24,13 @@ def is_filename(script: str) -> bool:
 @click.command(f'Run {__lang_name__} script')
 @click.argument('script', nargs=1, required=True)
 @click.option('-v', '--verbose', count=True)
-@click.option('-t', '--transpile', 'only_transpile', is_flag=True, default=False)
-def main(script: str, only_transpile: bool, verbose: int) -> None:
+@click.option('-t', '--transpile', 'show_transpiled', is_flag=True, default=False)
+@click.option('-r', '--run', 'run_anyway', is_flag=True, default=False)
+def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> None:
     script = script.strip()
+    context = TranspilerContext(
+        verbosity=verbose,
+    )
 
     if verbose:
         console.print(f'Verbosity: {info(VERBOSITY_NUM_TO_STR[verbose])}')
@@ -75,23 +43,24 @@ def main(script: str, only_transpile: bool, verbose: int) -> None:
             iprint(f'{name}: {info(value)}', 1)
         console.print()
 
-    with spinner():
-        if is_filename(script):
-            with open(script, 'r') as script_file:
-                result_script = transpile(file=script_file)
-        else:
-            result_script = transpile(source=script)
+    if is_filename(script):
+        context.set_filename(script)
+        with open(script, 'r') as script_file:
+            result_script = transpile(file=script_file, context=context)
+    else:
+        result_script = transpile(source=script, context=context)
 
     if verbose:
         print_line()
 
-    if only_transpile:
-        print_center(title(os.path.basename(script)))
+    if show_transpiled:
+        print_center(title('Transpiled'))
         console.print(prettify(result_script), highlight=False)
-        sys.exit(0)
+        if not run_anyway:
+            sys.exit(0)
+        print_line()
 
     execute(result_script)
-
     sys.exit(0)
 
 
