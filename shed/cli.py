@@ -1,8 +1,6 @@
-import os
 import sys
 
 import click
-from click_spinner import spinner
 
 from . import __lang_name__, __version__, __lang_extension__
 from .config import settings
@@ -33,7 +31,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
     )
 
     if verbose:
-        console.print(f'Verbosity: {info(VERBOSITY_NUM_TO_STR[verbose])}')
+        console.print(f'Verbosity: {info(f"{VERBOSITY_NUM_TO_STR[verbose]} ({verbose})")}')
         console.print(f'Processing: {info(script)}')
         console.print()
     if verbose == 2:
@@ -59,6 +57,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
         if not run_anyway:
             sys.exit(0)
         print_line()
+        print_center(title('Result'))
 
     execute(result_script)
     sys.exit(0)

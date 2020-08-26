@@ -10,7 +10,7 @@ def source_from_filename(filename: str) -> str:
         return script_file.read()
 
 
-def validate_source(source: str, context: TranspilerContext) -> None:
+def validate(source: str, context: TranspilerContext) -> None:
     reserved_names = (sb_name, context.prefix)
     for name in reserved_names:
         if name in source:  # TODO, FIXME: very dumb check
@@ -37,8 +37,8 @@ def transpile(
         filename = file
 
     context = context or TranspilerContext(filename=filename)
-    validate_source(source, context)
+    validate(source, context)
     return transpile_source(source, context)
 
 
-__all__ = ['transpile_source', 'transpile_ast', 'transpile', 'validate_source', 'TranspilerContext']
+__all__ = ['transpile_ast', 'transpile', 'validate', 'TranspilerContext']

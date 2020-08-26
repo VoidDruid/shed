@@ -11,6 +11,7 @@ def pprettify(ast: AST) -> None:
 
 
 def prettify(ast: AST) -> str:
+    # TODO: actually prettify
     return dump(ast)
 
 

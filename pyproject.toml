@@ -7,7 +7,6 @@ authors = ["Igor Beschastnov <beschastnovigor@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 click = "^7.1.2"
-click-spinner = "^0.1.10"
 rich = "^6.0.0"
 pydantic = "^1.6.1"
 
