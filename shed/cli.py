@@ -56,6 +56,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
         console.print(prettify(result_script), highlight=False)
         if not run_anyway:
             sys.exit(0)
+
         print_line()
         print_center(title('Result'))
 

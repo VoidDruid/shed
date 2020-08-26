@@ -125,7 +125,7 @@ class ShellCallTransformer(NodeTransformer):
     def is_top_level(node: AST) -> bool:
         if isinstance(node, Module):
             return True
-        # either has a module as a parent, or as grandparent - then should be wrapped in expr
+        # either has a module as a parent, or as grandparent - then should be wrapped in Expr
         if parent := getattr(node, 'parent', None):
             if isinstance(parent, Module):
                 return True
@@ -136,7 +136,7 @@ class ShellCallTransformer(NodeTransformer):
         return False
 
     def visit_Name(self, node: Name) -> Any:
-        # 'Name' is top-level expr by itself - it should be a shell call
+        # if Name or Constant is a top-level expr by itself - it should be a shell call
         if self.is_top_level(node):
             return self.replace_with_call(node, get_output=False)
         return node
