@@ -6,13 +6,13 @@ from rich.console import Console
 console = Console()
 
 
-def pprettify(ast: AST) -> None:
-    console.print(prettify(ast))
-
-
 def prettify(ast: AST) -> str:
     # TODO: actually prettify
     return dump(ast)
+
+
+def pprettify(ast: AST) -> None:
+    console.print(prettify(ast))
 
 
 def title(string: Any) -> str:
@@ -43,5 +43,5 @@ def print_center(string: str) -> None:
     console.print(center(string))
 
 
-def iprint(string: str, ident: int = 0) -> None:
+def print_padded(string: str, ident: int = 0) -> None:
     console.print('\t' * ident + string)

@@ -2,11 +2,11 @@ import sys
 
 import click
 
-from . import __lang_name__, __version__, __lang_extension__
+from . import __lang_extension__, __lang_name__, __version__
 from .config import settings
-from .run import execute
-from .transpiler import transpile, TranspilerContext
-from .utils import prettify, console, title, info, print_line, print_center, iprint
+from .execute import execute
+from .transpiler import TranspilerContext, transpile
+from .utils import console, info, prettify, print_center, print_line, print_padded, title
 
 VERBOSITY_NUM_TO_STR = {
     1: 'info',
@@ -26,9 +26,7 @@ def is_filename(script: str) -> bool:
 @click.option('-r', '--run', 'run_anyway', is_flag=True, default=False)
 def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> None:
     script = script.strip()
-    context = TranspilerContext(
-        verbosity=verbose,
-    )
+    context = TranspilerContext(verbosity=verbose,)
 
     if verbose:
         console.print(f'Verbosity: {info(f"{VERBOSITY_NUM_TO_STR[verbose]} ({verbose})")}')
@@ -36,9 +34,9 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
         console.print()
     if verbose == 2:
         console.print(title(f'{__lang_name__.upper()} info'))
-        iprint(f'Version {info(__version__)}', 1)
+        print_padded(f'Version {info(__version__)}', 1)
         for name, value in settings:
-            iprint(f'{name}: {info(value)}', 1)
+            print_padded(f'{name}: {info(value)}', 1)
         console.print()
 
     if is_filename(script):
