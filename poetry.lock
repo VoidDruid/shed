@@ -7,6 +7,17 @@ python-versions = "*"
 version = "1.4.4"
 
 [[package]]
+category = "main"
+description = "Pretty print the output of python stdlib `ast.parse`."
+name = "astpretty"
+optional = false
+python-versions = ">=3.6.1"
+version = "2.0.0"
+
+[package.extras]
+typed = ["typed-ast"]
+
+[[package]]
 category = "dev"
 description = "An abstract syntax tree for Python with inference support."
 name = "astroid"
@@ -388,13 +399,17 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "2f2e431bf07fd2ca25d1ef21f6fe4455c4c6e79759976dce37cd3bc39d6cfe1e"
+content-hash = "3eebdc447f9b0efccc6e6ff16b294b36b9a3b914fa4f5c639b32ce1916efd2fa"
 python-versions = "^3.8"
 
 [metadata.files]
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
+]
+astpretty = [
+    {file = "astpretty-2.0.0-py2.py3-none-any.whl", hash = "sha256:7f27633ed885033da8b58666e7079ffff7e8e01869ec1aa66484cb5185ea3aa4"},
+    {file = "astpretty-2.0.0.tar.gz", hash = "sha256:e4724bfd753636ba4a84384702e9796e5356969f40af2596d846ce64addde086"},
 ]
 astroid = [
     {file = "astroid-2.4.2-py3-none-any.whl", hash = "sha256:bc58d83eb610252fd8de6363e39d4f1d0619c894b0ed24603b881c02e64c7386"},

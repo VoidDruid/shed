@@ -1,6 +1,7 @@
-from ast import AST, dump
+from ast import AST
 from typing import Any
 
+import astpretty
 from rich.console import Console
 
 console = Console()
@@ -8,7 +9,7 @@ console = Console()
 
 def prettify(ast: AST) -> str:
     # TODO: actually prettify
-    return dump(ast)
+    return astpretty.pformat(ast, show_offsets=False)
 
 
 def pprettify(ast: AST) -> None:

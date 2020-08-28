@@ -26,6 +26,7 @@ If it was possible, I would write the whole program as one big AST transformer,
 
 # pylint: disable=C0103
 
+import ast
 from ast import AST, Assign, Attribute, Call, Constant, Expr, Import, ImportFrom
 from ast import List as ASTList
 from ast import (
@@ -42,7 +43,6 @@ from ast import (
 from typing import Any, Optional, Union
 
 from ..config import __lang_name__
-from ..utils import console, print_center, print_line, title
 from .context import TranspilerContext
 from .retokenizer import retokenize
 
@@ -52,21 +52,12 @@ def transpile_source(script_source: str, context: Optional[TranspilerContext]) -
         context = TranspilerContext()
 
     prepared_script = retokenize(script_source, context)
-
-    if context.verbosity >= 2:  # type:ignore
-        print_line()
-        print_center(title('Retokenized'))
-        console.print(prepared_script, highlight=False)
-
     return transpile_ast(parse(prepared_script), context)
 
 
 SUBPROCESS_NAME = '__sb__'
 subprocess_import = Import(names=[alias(name='subprocess', asname=SUBPROCESS_NAME)])
-std_import = ImportFrom(module=f'{__lang_name__}.std', names=[alias(name='*')])
-subprocess_import.lineno = 1
-std_import.lineno = 2
-subprocess_import.col_offset = std_import.col_offset = 1
+std_import = ImportFrom(module=f'{__lang_name__}.std', names=[alias(name='*', asname=None)], level=0)
 
 
 class ShellCallTransformer(NodeTransformer):
@@ -106,21 +97,23 @@ class ShellCallTransformer(NodeTransformer):
 
     @staticmethod
     def is_top_level(node: AST) -> bool:
-        if isinstance(node, Module):
-            return True
+        return isinstance(node, Module)  # TODO: func, with, cycles, etc.
+
+    @staticmethod
+    def is_at_top_level(node: AST) -> bool:
         # either has a module as a parent, or as grandparent - then should be wrapped in Expr
         parent = getattr(node, 'parent', None)
-        if isinstance(parent, Module):
+        if ShellCallTransformer.is_top_level(parent):
             return True
         if isinstance(parent, Expr):
             grandparent = getattr(parent, 'parent', None)
-            if isinstance(grandparent, Module):
+            if ShellCallTransformer.is_top_level(grandparent):
                 return True
         return False
 
     def visit_Name(self, node: Name) -> Any:
         # if Name or Constant is a top-level expr by itself - it should be a shell call
-        if self.is_top_level(node):
+        if self.is_at_top_level(node):
             return self.replace_with_call(node, get_output=False)
         return node
 

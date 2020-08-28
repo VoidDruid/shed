@@ -1,6 +1,6 @@
 import io
 from ast import AST
-from typing import Optional, TextIO, Union
+from typing import Optional, TextIO, Union, Tuple
 
 from .context import TranspilerContext
 from .retokenizer import retokenize
@@ -16,8 +16,8 @@ def validate(source: str, context: TranspilerContext) -> None:
     reserved_names = (SUBPROCESS_NAME, context.prefix)
     for name in reserved_names:
         if name in source:  # TODO, FIXME: very dumb check
-            raise ValueError(f'Found reserved name/prefix {name}')
-    if '\n\t' in source:
+            raise ValueError(f'Found reserved name/prefix {name} in script')
+    if '\n\t' in source:  # TODO: control with some flag ??
         raise ValueError('Tabs are forbidden! Use spaces for indentation')
 
 
@@ -43,4 +43,4 @@ def transpile(
     return transpile_source(source, context)
 
 
-__all__ = ['transpile_ast', 'transpile', 'validate', 'TranspilerContext', 'retokenize']
+__all__ = ['transpile', 'validate', 'retokenize', 'transpile_ast', 'TranspilerContext']

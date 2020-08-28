@@ -4,7 +4,7 @@ from ..config import __lang_name__
 
 
 class TranspilerContext:
-    DEFAULT_FILENAME = f'__{__lang_name__}_script'
+    DEFAULT_FILENAME = f'{__lang_name__}_script'
     filename: str
     prefix: str
     fields = {'verbosity'}
@@ -16,6 +16,7 @@ class TranspilerContext:
         for name, value in kwargs.items():
             setattr(self, name, value)
 
+        self.retokenized: Optional[str] = None
         self.id_counter = -1
         self.set_filename(filename)
 

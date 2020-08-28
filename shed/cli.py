@@ -32,7 +32,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
         console.print(f'Verbosity: {info(f"{VERBOSITY_NUM_TO_STR[verbose]} ({verbose})")}')
         console.print(f'Processing: {info(script)}')
         console.print()
-    if verbose == 2:
+    if verbose >= 2:
         console.print(title(f'{__lang_name__.upper()} info'))
         print_padded(f'Version {info(__version__)}', 1)
         for name, value in settings:
@@ -42,23 +42,27 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
     if is_filename(script):
         context.set_filename(script)
         with open(script, 'r') as script_file:
-            result_script = transpile(file=script_file, context=context)
+            result_script_ast = transpile(file=script_file, context=context)
     else:
-        result_script = transpile(source=script, context=context)
+        result_script_ast = transpile(source=script, context=context)
 
-    if verbose:
+    if context.verbosity >= 2:  # type:ignore
         print_line()
+        print_center(title('Retokenized'))
+        console.print(context.retokenized, highlight=False)
 
     if show_transpiled:
+        print_line()
         print_center(title('Transpiled'))
-        console.print(prettify(result_script), highlight=False)
+        console.print(prettify(result_script_ast), highlight=False)
         if not run_anyway:
             sys.exit(0)
 
+    if show_transpiled or verbose:
         print_line()
         print_center(title('Execution'))
 
-    execute(result_script)
+    execute(result_script_ast, context)
     sys.exit(0)
 
 

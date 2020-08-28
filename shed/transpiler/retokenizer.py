@@ -24,6 +24,10 @@ def as_call(string: str) -> str:
     return SHELL_CALL_PATTERN.format(string)
 
 
+def as_const(string: str) -> str:
+    return f'"{string}"'
+
+
 def padded_string(string: str, spaces: int) -> str:
     return ' ' * spaces + string
 
@@ -46,11 +50,11 @@ def retokenize(script_source: str, context: Optional[TranspilerContext]) -> str:
         for match in matches:
             # top-level consts are handled as shell calls
             if as_call(match) == string.lstrip():
-                to_replace.append((index, padded_string(f'"{match}"', leading_spaces)))
+                to_replace.append((index, padded_string(as_const(match), leading_spaces)))
                 break
 
             new_id = context.get_new_id()
-            to_insert.append((index, padded_string(f'{new_id} = {match}', leading_spaces)))
+            to_insert.append((index, padded_string(f'{new_id} = {as_const(match)}', leading_spaces)))
 
             new_string = new_string.replace(as_call(match), new_id)
         else:
@@ -59,11 +63,12 @@ def retokenize(script_source: str, context: Optional[TranspilerContext]) -> str:
     for index, string in to_replace:
         strings[index] = string
 
-    for index, string in to_insert:
-        strings.insert(index, string)
+    for counter, (index, string) in enumerate(to_insert):
+        strings.insert(index + counter, string)
 
     result = '\n'.join(strings)
     if result.endswith('\n'):  # There are better ways to do it, but here I like this one
         result = result[:-1]
 
+    context.retokenized = result
     return result
