@@ -56,7 +56,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
             sys.exit(0)
 
         print_line()
-        print_center(title('Result'))
+        print_center(title('Execution'))
 
     execute(result_script)
     sys.exit(0)

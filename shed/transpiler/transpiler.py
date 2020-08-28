@@ -55,7 +55,7 @@ def transpile_source(script_source: str, context: Optional[TranspilerContext]) -
 
     if context.verbosity >= 2:  # type:ignore
         print_line()
-        print_center(title('Prepared script'))
+        print_center(title('Retokenized'))
         console.print(prepared_script, highlight=False)
 
     return transpile_ast(parse(prepared_script), context)
