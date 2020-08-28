@@ -143,4 +143,5 @@ def transpile_ast(script_ast: AST, context: Optional[TranspilerContext] = None) 
 
     result_ast = transformer.visit(script_ast)
     fix_missing_locations(result_ast)
+
     return result_ast
