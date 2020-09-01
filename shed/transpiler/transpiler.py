@@ -99,7 +99,7 @@ class ShellCallTransformer(NodeTransformer):
 
     @staticmethod
     def is_top_level_parent(node: AST) -> bool:
-        return isinstance(node, Expr)  # TODO: func probably should be renamed
+        return isinstance(node, Expr)
 
     @staticmethod
     def is_at_top_level(node: AST) -> bool:
