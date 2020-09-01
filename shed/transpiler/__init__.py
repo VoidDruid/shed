@@ -1,6 +1,6 @@
 import io
 from ast import AST
-from typing import Optional, TextIO, Union, Tuple
+from typing import Optional, TextIO, Tuple, Union
 
 from .context import TranspilerContext
 from .retokenizer import retokenize

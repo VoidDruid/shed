@@ -54,7 +54,9 @@ def retokenize(script_source: str, context: Optional[TranspilerContext]) -> str:
                 break
 
             new_id = context.get_new_id()
-            to_insert.append((index, padded_string(f'{new_id} = {as_const(match)}', leading_spaces)))
+            to_insert.append(
+                (index, padded_string(f'{new_id} = {as_const(match)}', leading_spaces))
+            )
 
             new_string = new_string.replace(as_call(match), new_id)
         else:

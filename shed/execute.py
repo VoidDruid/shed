@@ -12,7 +12,7 @@ def execute(script: AST, config: Optional[TranspilerContext] = None) -> None:
     else:
         filename = TranspilerContext.DEFAULT_FILENAME
 
-    # globals and locals for `exec` need to be the same dict, so it thinks it runs in a module
+    # globals and locals for `exec` need to be the same dict, so that it thinks it runs in a module
     env_substitution = {}
     # TODO: optimize??, add some checks, handle exit code,
     #  maybe special handling for streams, pipes, etc. - a lot of stuff

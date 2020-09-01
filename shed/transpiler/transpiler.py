@@ -57,7 +57,9 @@ def transpile_source(script_source: str, context: Optional[TranspilerContext]) -
 
 SUBPROCESS_NAME = '__sb__'
 subprocess_import = Import(names=[alias(name='subprocess', asname=SUBPROCESS_NAME)])
-std_import = ImportFrom(module=f'{__lang_name__}.std', names=[alias(name='*', asname=None)], level=0)
+std_import = ImportFrom(
+    module=f'{__lang_name__}.std', names=[alias(name='*', asname=None)], level=0
+)
 
 
 class ShellCallTransformer(NodeTransformer):
@@ -96,18 +98,18 @@ class ShellCallTransformer(NodeTransformer):
         return expr
 
     @staticmethod
-    def is_top_level(node: AST) -> bool:
-        return isinstance(node, Module)  # TODO: func, with, cycles, etc.
+    def is_top_level_parent(node: AST) -> bool:
+        return isinstance(node, Expr)  # TODO: func probably should be renamed
 
     @staticmethod
     def is_at_top_level(node: AST) -> bool:
         # either has a module as a parent, or as grandparent - then should be wrapped in Expr
         parent = getattr(node, 'parent', None)
-        if ShellCallTransformer.is_top_level(parent):
+        if ShellCallTransformer.is_top_level_parent(parent):
             return True
         if isinstance(parent, Expr):
             grandparent = getattr(parent, 'parent', None)
-            if ShellCallTransformer.is_top_level(grandparent):
+            if ShellCallTransformer.is_top_level_parent(grandparent):
                 return True
         return False
 

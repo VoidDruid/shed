@@ -7,11 +7,19 @@ class TranspilerContext:
     DEFAULT_FILENAME = f'{__lang_name__}_script'
     filename: str
     prefix: str
-    fields = {'verbosity'}
+    __slots__ = (
+        # Logic
+        'retokenized',
+        'id_counter',
+        'filename',
+        'prefix',
+        # Context
+        'verbosity',
+    )
 
     def __init__(self, filename: Optional[str] = None, **kwargs: Any) -> None:
         assert (
-            len(set(kwargs.keys()) - self.fields) == 0
+            len(set(kwargs.keys()) - set(self.__slots__)) == 0
         ), 'Unexpected fields provided for TranspilerContext'
         for name, value in kwargs.items():
             setattr(self, name, value)
