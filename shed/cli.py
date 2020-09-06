@@ -24,7 +24,9 @@ def is_filename(script: str) -> bool:
 @click.option('-v', '--verbose', count=True)
 @click.option('-t', '--transpile', 'show_transpiled', is_flag=True, default=False)
 @click.option('-r', '--run', 'run_anyway', is_flag=True, default=False)
-def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> None:
+def main(  # pylint:disable=R0915
+    script: str, show_transpiled: bool, run_anyway: bool, verbose: int
+) -> None:
     script = script.strip()
     context = TranspilerContext(verbosity=verbose,)
 
@@ -46,6 +48,7 @@ def main(script: str, show_transpiled: bool, run_anyway: bool, verbose: int) -> 
     else:
         result_script_ast = transpile(source=script, context=context)
 
+    # pylint: disable=no-member
     if context.verbosity >= 2:  # type:ignore
         print_line()
         print_center(title('Retokenized'))

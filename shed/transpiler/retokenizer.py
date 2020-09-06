@@ -3,64 +3,25 @@ Retokenizer parses source code, and transforms it's elements that are
  invalid in python (shell calls) into *syntactically* correct python.
 
 ---
-Retokenizer works by decomposing source code into tokens, modifying them,
- and then building source code from them again.
+Retokenizer works by parsing and modifying source code, looking for shell-specific syntax.
 It *does not* build python code that can be run - it still needs to be transpiled.
 Rationale for this approach is in the docstring for the neighbouring "transpiler.py" module
 """
 
-# TODO: use `tokenize` instead of manipulating strings directly
-
 import re
-from typing import Optional
+from typing import List, Optional, Tuple
 
 from .context import TranspilerContext
-
-SHELL_CALL_PATTERN = '$({})'
-SHELL_CALL_REGEX = re.compile(r'.*?\$\((.*?)\).*?')
+from .utils import SHELL_CALL_REGEX, SHELL_VAR_REGEX, as_call, as_const, as_var, padded_string
 
 
-def as_call(string: str) -> str:
-    return SHELL_CALL_PATTERN.format(string)
-
-
-def as_const(string: str) -> str:
-    return f'"{string}"'
-
-
-def padded_string(string: str, spaces: int) -> str:
-    return ' ' * spaces + string
-
-
-def retokenize(script_source: str, context: Optional[TranspilerContext]) -> str:
+def retokenize(script_source: str, context: Optional[TranspilerContext] = None) -> str:
     if context is None:
         context = TranspilerContext()
 
     strings = script_source.split('\n')
-    to_replace = []
-    to_insert = []
-    for index, string in enumerate(strings):
-        matches = re.findall(SHELL_CALL_REGEX, string)
-        if not matches:
-            continue
 
-        new_string = string
-        leading_spaces = len(new_string) - len(new_string.lstrip(' '))
-
-        for match in matches:
-            # top-level consts are handled as shell calls
-            if as_call(match) == string.lstrip():
-                to_replace.append((index, padded_string(as_const(match), leading_spaces)))
-                break
-
-            new_id = context.get_new_id()
-            to_insert.append(
-                (index, padded_string(f'{new_id} = {as_const(match)}', leading_spaces))
-            )
-
-            new_string = new_string.replace(as_call(match), new_id)
-        else:
-            to_replace.append((index, new_string))
+    to_replace, to_insert = parse_strings(strings, context)
 
     for index, string in to_replace:
         strings[index] = string
@@ -74,3 +35,44 @@ def retokenize(script_source: str, context: Optional[TranspilerContext]) -> str:
 
     context.retokenized = result
     return result
+
+
+def parse_strings(
+    strings: List[str], context: Optional[TranspilerContext] = None
+) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str]]]:
+    if context is None:
+        context = TranspilerContext()
+
+    to_replace: List[Tuple[int, str]] = []
+    to_insert: List[Tuple[int, str]] = []
+
+    for index, string in enumerate(strings):
+        new_string = string
+        leading_spaces = len(new_string) - len(new_string.lstrip(' '))
+
+        def replace_matches(
+            matches: List[str], index_: int = index, leading_spaces_: int = leading_spaces
+        ) -> None:
+            nonlocal new_string
+            for match in matches:
+                new_id = context.get_new_id()  # type:ignore
+                new_string = new_string.replace(match, new_id)
+                to_insert.append(
+                    (index_, padded_string(f'{new_id} = {as_const(match)}', leading_spaces_))
+                )
+
+        var_matches = [as_var(m) for m in re.findall(SHELL_VAR_REGEX, new_string)]
+        replace_matches(var_matches)
+
+        call_matches = [as_call(m) for m in re.findall(SHELL_CALL_REGEX, new_string)]
+        # top-level consts are handled as shell calls
+        if len(call_matches) == 1:
+            only_match = call_matches[0]
+            if only_match == string.lstrip():
+                to_replace.append((index, padded_string(as_const(only_match), leading_spaces)))
+                continue
+        replace_matches(call_matches)
+
+        to_replace.append((index, new_string))
+
+    return to_replace, to_insert

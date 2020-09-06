@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shed"
-version = "0.1.0"
+version = "0.1.1"
 description = "High-level shell scripting language, derived from Python"
 authors = ["Igor Beschastnov <beschastnovigor@gmail.com>"]
 
@@ -10,6 +10,7 @@ click = "^7.1.2"
 rich = "^6.0.0"
 pydantic = "^1.6.1"
 astpretty = "^2.0.0"
+pyparsing = "^2.4.7"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^19.10b0", allow-prereleases = true}

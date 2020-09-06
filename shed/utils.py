@@ -8,6 +8,8 @@ console = Console()
 
 
 def prettify(ast: AST) -> str:
+    from ast import dump
+    return dump(ast)
     return astpretty.pformat(ast, show_offsets=False)
 
 

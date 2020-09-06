@@ -248,7 +248,7 @@ mccabe = ">=0.6,<0.7"
 toml = ">=0.7.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -399,7 +399,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "3eebdc447f9b0efccc6e6ff16b294b36b9a3b914fa4f5c639b32ce1916efd2fa"
+content-hash = "e3c3fef75e842cc1214466a654e490486743f9159a42825d34d9aa1b8f6ea206"
 python-versions = "^3.8"
 
 [metadata.files]

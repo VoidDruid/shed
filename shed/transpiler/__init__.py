@@ -4,7 +4,7 @@ from typing import Optional, TextIO, Tuple, Union
 
 from .context import TranspilerContext
 from .retokenizer import retokenize
-from .transpiler import SUBPROCESS_NAME, transpile_ast, transpile_source
+from .transpiler import IMPL_NAME, transpile_ast, transpile_source
 
 
 def source_from_filename(filename: str) -> str:
@@ -13,7 +13,7 @@ def source_from_filename(filename: str) -> str:
 
 
 def validate(source: str, context: TranspilerContext) -> None:
-    reserved_names = (SUBPROCESS_NAME, context.prefix)
+    reserved_names = (IMPL_NAME, context.prefix)
     for name in reserved_names:
         if name in source:  # TODO, FIXME: very dumb check
             raise ValueError(f'Found reserved name/prefix {name} in script')
