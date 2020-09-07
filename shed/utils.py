@@ -1,4 +1,4 @@
-from ast import AST
+from ast import AST, dump
 from typing import Any
 
 import astpretty
@@ -8,9 +8,10 @@ console = Console()
 
 
 def prettify(ast: AST) -> str:
-    from ast import dump
-    return dump(ast)
-    return astpretty.pformat(ast, show_offsets=False)
+    try:
+        return astpretty.pformat(ast, show_offsets=False)
+    except Exception:  # pylint:disable=broad-except
+        return dump(ast)
 
 
 def pprettify(ast: AST) -> None:

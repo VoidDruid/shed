@@ -1,5 +1,7 @@
+# pylint: disable=unused-argument
+
 import subprocess as sb
-from typing import Any, List, Optional, Dict
+from typing import Any, Dict, List
 
 from ..std import norm
 
@@ -12,7 +14,7 @@ def process_result(result: bytes, args: List[str]) -> List[str]:
 def create_call_args(args: List[str], get_output: bool) -> Dict[str, Any]:
     # TODO, FIXME: get rid of shell=True, handle pipes as special case
 
-    args_dict = {'shell': False}
+    args_dict: Dict[str, Any] = {'shell': False}
 
     if '|' in args:
         args_dict['shell'] = True
@@ -23,7 +25,7 @@ def create_call_args(args: List[str], get_output: bool) -> Dict[str, Any]:
     return args_dict
 
 
-def call(args: List[str], get_output: Optional[bool] = False) -> Any:
+def call(args: List[str], get_output: bool = False) -> Any:
     # TODO: handle non-zero exit codes
     method = getattr(sb, 'check_output' if get_output else 'call')  # TODO, FIXME: seems sketchy
 
