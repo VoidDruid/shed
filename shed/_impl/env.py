@@ -20,6 +20,7 @@ def frame_env(frame: FrameType) -> ChainMap:
 
 def get_var(var: str) -> Any:
     # TODO: default pre-processing
+    # TODO: allow function calls and operations in ${}
     caller_frame = inspect.currentframe().f_back  # type:ignore
     value = frame_env(caller_frame).get(var, _ident)
     if not_exists(value):

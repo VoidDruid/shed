@@ -1,0 +1,20 @@
+# Script used in GIF example
+
+ps  # Call directly
+print('---------')
+
+# Or save to var
+files = $(ls)
+for file in files:
+    print(file)
+print('---------')
+
+find = input()
+# Embed vars in shell calls
+found = $(env | grep ${find})
+for f in found:
+     print(f.split('=')[0])
+print('---------')
+
+# Easily load env
+print(${LANG})
