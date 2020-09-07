@@ -3,7 +3,7 @@
 
 I really like shell, and really dislike shell scripting syntax - so I made this.
 
-![GIF Example](https://media.giphy.com/media/kGzY0pOW7bFnIj5Nmg/giphy.gif)
+![GIF Example](https://media.giphy.com/media/cjbizioA292Kgkh7Ln/giphy.gif)
 
 Shed is a tool that allows you to **"use python as bash"** - directly call shell from python.
 Works with functions, classes and so on - *no python functionality is removed*. 
