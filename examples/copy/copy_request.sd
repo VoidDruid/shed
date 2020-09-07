@@ -1,0 +1,28 @@
+files = $(ls)
+
+print('Available files: ', files)
+
+to_copy_index = -1
+while True:
+    to_copy_index = input('Specify index of file to copy: ')
+    try:
+        to_copy_index = int(to_copy_index)
+    except ValueError:
+        print('Not a valid integer')
+
+    if 0 <= to_copy_index <= (len(files) - 1):
+        break
+    else:
+        print('Not in range')
+
+to_copy = files[to_copy_index]
+
+copy_parts = to_copy.split('.')
+if len(copy_parts) > 1:
+    ind = -2
+else:
+    ind = -1
+copy_parts[ind] = copy_parts[ind] + '_copy'
+copy_name = '.'.join(copy_parts)
+
+$(cp ${to_copy} ${copy_name})

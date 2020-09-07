@@ -68,7 +68,7 @@ def parse_strings(
         # top-level consts are handled as shell calls
         if len(call_matches) == 1:
             only_match = call_matches[0]
-            if only_match == string.lstrip():
+            if only_match == new_string.lstrip():
                 to_replace.append((index, padded_string(as_const(only_match), leading_spaces)))
                 continue
         replace_matches(call_matches)
