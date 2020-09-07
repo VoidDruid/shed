@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shed"
-version = "0.1.1"
+version = "0.1.2"
 description = "High-level shell scripting language, derived from Python"
 authors = ["Igor Beschastnov <beschastnovigor@gmail.com>"]
 
